@@ -7,7 +7,6 @@
 <script>
 import Index from './components/Index.vue'
 
-
 export default {
   name: 'App',
   components: {
@@ -19,4 +18,10 @@ export default {
   // }
 }
 </script>
+
+<style>
+#app{
+  box-sizing: border-box;
+}
+</style>
 

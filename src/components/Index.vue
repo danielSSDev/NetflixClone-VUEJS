@@ -1,5 +1,21 @@
 <template>
   <div class="index">
+  <div class="moviePopular">
+    <h2>FILME EM DESTAQUE</h2>
+
+      <div class="itemPopular">
+         <section class="popular-area">
+           <div class="w3-content w3-section" v-for="popular in listMoviePopular.items.results" :key="popular.results">
+             <img class="imgSlider" :src="`https://image.tmdb.org/t/p/original${popular.backdrop_path}`" alt="">
+           </div>
+        </section>
+      </div>
+  </div>
+
+  <button @click="carousel()">click</button>
+
+
+
     <div class="movinRow" v-for="item in listMovie" :key="item.value">
       <h2 class="title">{{ item.title }}</h2>
 
@@ -23,7 +39,9 @@ export default {
 
   data: function(){
     return{
-      listMovie: null
+      listMovie: null,
+      listMoviePopular: null,
+
     }
   },
 
@@ -36,11 +54,50 @@ export default {
     console.log('LISTA DE FILME', this.listMovie)
 
     }).catch(err => {
-      console.log('ERROOOOOO', err);
+      console.log('ERROOOOOO!!!', err);
     })
+
+    Tmdb.getMoviePopular().then( value => {
+      this.listMoviePopular = value[0]
+      console.log('LISTA DE FILMES POPULAR', this.listMoviePopular)
+
+    }).catch(err => {
+      console.log('ERRO MOVEI POPULAR!!!', err)
+    })
+
   },
 
   methods:{
+
+    carousel(){
+      let indexImg = 0
+      let img = document.getElementsByClassName('imgSlider');
+
+
+
+console.log('IMAGE', img.length)
+      for(var i = 0; i < img.length; i++){
+        img[i].style.display = 'none';
+      }
+
+      indexImg++
+
+      if(indexImg > img.length){
+        indexImg = 1;
+      }
+      img[indexImg-1].style.display = 'block'
+
+      this.set();
+    },
+
+
+
+    set(){
+       setTimeout(function(){
+                    this.carousel();
+                }, 2000);
+    }
+
   }
 }
 </script>
@@ -57,7 +114,7 @@ export default {
   margin-left: 30px;
 }
 .list{
-  width: 99999999999999px;
+  width: 99999999999px;
 }
 .item{
   display: inline-block;
@@ -73,7 +130,18 @@ export default {
 .item img:hover{
   transform: scale(1);
 }
+.popular-area{
+  background-size: 'cover';
+  background-position: 'center';
+}
+.imgSlider{
+  display: none;
+  width: 100%;
+}
 
+.icones{
+  background-color: white;
+}
 
 </style>
 

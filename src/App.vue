@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Index/>
+    <Index @dialog="true"/>
   </div>
 </template>
 

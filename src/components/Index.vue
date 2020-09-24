@@ -4,17 +4,13 @@
     <h2>FILME EM DESTAQUE</h2>
 
       <div class="itemPopular">
-         <section class="popular-area">
-           <div class="w3-content w3-section" v-for="popular in listMoviePopular.items.results" :key="popular.results">
+         <section class="popular-area" v-if="listMoviePopular">
+            <div class="w3-content w3-section" v-for="popular in listMoviePopular.items.results" :key="popular.results">
              <img class="imgSlider" :src="`https://image.tmdb.org/t/p/original${popular.backdrop_path}`" alt="">
            </div>
         </section>
       </div>
   </div>
-
-  <button @click="carousel()">click</button>
-
-
 
     <div class="movinRow" v-for="item in listMovie" :key="item.value">
       <h2 class="title">{{ item.title }}</h2>
@@ -41,12 +37,12 @@ export default {
     return{
       listMovie: null,
       listMoviePopular: null,
+      imagensPopulas: []
 
     }
   },
 
-  props: {
-  },
+  props:['dialog'],
 
   mounted(){
     Tmdb.getHomeList().then( value => {
@@ -59,6 +55,7 @@ export default {
 
     Tmdb.getMoviePopular().then( value => {
       this.listMoviePopular = value[0]
+
       console.log('LISTA DE FILMES POPULAR', this.listMoviePopular)
 
     }).catch(err => {
@@ -67,35 +64,62 @@ export default {
 
   },
 
+  watch:{
+    listMoviePopular:function(value){
+      if(value.items.results.length > 0){
+        console.log('LIST MOVIE WATCH')
+        setTimeout(() => {
+          this.carousel();
+        }, 100);
+      }
+    },
+  },
+
   methods:{
 
     carousel(){
+      console.log('CAHAMANDO A FUNCAO SIM')
       let indexImg = 0
+      let imgLength = 0
       let img = document.getElementsByClassName('imgSlider');
 
-
-
-console.log('IMAGE', img.length)
       for(var i = 0; i < img.length; i++){
+        console.log('TODAS IMAGENS',img.length )
+        imgLength = img.length
         img[i].style.display = 'none';
       }
+    
+        console.log('INDEX', indexImg)
 
-      indexImg++
+      img[indexImg].style.display = 'block'
+
+      // indexImg++
 
       if(indexImg > img.length){
-        indexImg = 1;
+        indexImg = 0
       }
-      img[indexImg-1].style.display = 'block'
 
-      this.set();
+      // img[indexImg].style.display = 'none';
+   setInterval(() => {
+       indexImg++
+
+        console.log('INDEX dentro do inmterval', indexImg)
+
+      img[indexImg-1].style.display = 'none';
+      img[indexImg].style.display = 'block'
+
+      if(indexImg >= imgLength){
+        indexImg = 0
+      }
+
+   }, 6000);
+
     },
 
+    setCarrouselInterval(){
 
+    
 
-    set(){
-       setTimeout(function(){
-                    this.carousel();
-                }, 2000);
     }
 
   }
